@@ -28,19 +28,26 @@ const Auth = () => {
     },
   ];
 
-  const { authService, loading, error } = useAuthHook();
+  const { authService, loading } = useAuthHook();
+
+  function validateEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!emailRef.current && !passwordRef.current) return;
     const email = emailRef.current!.value;
     const password = passwordRef.current!.value;
-    if (email.length === 0 || password.length === 0) {
-      alert("Invalid Credentials!");
-      return;
-    }
+    if (email.length === 0 || password.length === 0)
+      return alert("Invalid Credentials!");
+
+    if (!validateEmail(email)) return alert("Please provide a valid email");
+
     await authService(email, password);
   }
+
   return (
     <AuthContainer>
       <img src={image} alt="logo image" />

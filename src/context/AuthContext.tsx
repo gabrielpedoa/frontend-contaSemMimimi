@@ -11,7 +11,10 @@ interface IAuthContext {
   loading: boolean;
   logout: () => void;
   handleUpdateUser: (user: IUser) => void;
-  error: AxiosError | null;
+}
+
+interface ErrorResponse {
+  errorMessage?: string;
 }
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -24,7 +27,6 @@ export const AuthProvider = ({ children }: props) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<AxiosError | null>(null);
 
   useLayoutEffect(() => {
     const storageToken = localStorage.getItem(TOKEN_KEY);
@@ -39,7 +41,6 @@ export const AuthProvider = ({ children }: props) => {
 
   async function authService(email: string, password: string) {
     setLoading(() => true);
-    setError(() => null);
     try {
       const response = await apiUrl.post<{ token: string; user: IUser }>(
         "/login",
@@ -57,8 +58,8 @@ export const AuthProvider = ({ children }: props) => {
       }
     } catch (error) {
       const { response } = error as AxiosError<string>;
-      setError(() => error as AxiosError);
-      throw response?.data;
+      const err = (response?.data as ErrorResponse)?.errorMessage;
+      alert(err);
     } finally {
       setLoading(() => false);
     }
@@ -85,7 +86,6 @@ export const AuthProvider = ({ children }: props) => {
         loading,
         logout,
         handleUpdateUser,
-        error,
       }}
     >
       {children}
