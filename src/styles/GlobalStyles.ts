@@ -1,10 +1,23 @@
+import { createTheme } from "@mui/material";
 import styled, { createGlobalStyle } from "styled-components";
+
+export const THEME = createTheme({
+  typography: {
+   "fontFamily": `'Inconsolata', monospace;`,
+   "fontSize": 14,
+   "fontWeightLight": 300,
+   "fontWeightRegular": 400,
+   "fontWeightMedium": 500
+  }
+});
+
 
 export const GlobalStyle = createGlobalStyle`
      * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        font-family: 'Inconsolata', monospace;
     }
 
     li {
@@ -25,5 +38,6 @@ export const MainContainer = styled.main`
     max-height: 100vh;
     width: 100%;
     overflow-y: scroll;
+    text-transform: uppercase;
   }
 `;
