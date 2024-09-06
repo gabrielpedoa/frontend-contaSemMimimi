@@ -2,22 +2,24 @@ import { ThemeProvider } from "@mui/material";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useVerifyAuth } from "./hooks/useVerifyAuth";
+import SideBar from "./layout/SideBar";
 import Auth from "./pages/auth/Auth";
 import { routes } from "./routes";
 import { GlobalStyle, MainContainer, THEME } from "./styles/GlobalStyles";
 
 function App() {
   const { authenticated } = useVerifyAuth();
-
+  const showSideBar = authenticated;
   return (
     <div>
       <ThemeProvider theme={THEME}>
         <GlobalStyle />
+        {showSideBar && <SideBar />}
         <MainContainer>
           <div className="content">
             <Routes>
               <Route
-                path="/login"
+                path="/"
                 element={
                   authenticated ? <Navigate to={"/dashboard"} /> : <Auth />
                 }
