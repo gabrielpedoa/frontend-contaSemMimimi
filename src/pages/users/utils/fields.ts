@@ -3,17 +3,27 @@ import { IFields } from "../../../@types/components/ListingItems";
 export const fields: IFields[] = [
   {
     name: "id",
-    width: "40%",
+    w: "10%",
     isShow: true,
   },
   {
     name: "nome",
-    width: "40%",
+    w: "30%",
     isShow: true,
   },
   {
     name: "tipo",
-    width: "20%",
+    w: "30%",
+    isShow: true,
+  },
+  {
+    name: "editar",
+    w: "15%",
+    isShow: true,
+  },
+  {
+    name: "deletar",
+    w: "15%",
     isShow: true,
   },
 ];

@@ -7,12 +7,12 @@ function ListingItems<T, C>({
   data,
   ItemComponent,
   fields,
-  width,
+  w,
   itemProps,
 }: IListingItemsProps<T, C>) {
   const itemProp = itemProps;
   return (
-    <ListContainer width={width}>
+    <ListContainer w={w}>
       <Items>
         {React.Children.toArray(
           fields.map((item, i) => (
@@ -20,7 +20,7 @@ function ListingItems<T, C>({
               {item.isShow && (
                 <FieldsItems
                   isShow={item.isShow}
-                  width={item.width}
+                  w={item.w}
                   key={`${useId()}-${i}`}
                 >
                   <span>{item.name}</span>

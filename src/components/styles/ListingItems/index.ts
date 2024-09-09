@@ -1,14 +1,16 @@
 import styled from "styled-components";
 
-export const ListContainer = styled.div<{ width?: string }>`
+export const ListContainer = styled.div<{ w?: string }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: ${(props) => (props.width ? props.width : "100%")};
-  border: 1px solid #c2c2c2;
+  width: ${(props) => (props.w ? props.w : "95%")};
+  border: 2px solid #c2c2c2;
   overflow-x: auto;
   height: auto;
   overflow-y: none;
+  border-radius: 2%;
+
 `;
 
 export const Items = styled.ul`
@@ -24,12 +26,12 @@ export const Items = styled.ul`
   }
 `;
 
-export const FieldsItems = styled.li<{ width: string; isShow?: boolean }>`
-  max-width: ${(props) => props.width};
-  min-width: ${(props) => props.width};
-  border: 1px solid #c2c2c2;
+export const FieldsItems = styled.li<{ w: string; isShow?: boolean }>`
+  max-width: ${(props) => props.w};
+  min-width: ${(props) => props.w};
+  border: 2px solid #c2c2c2;
   padding: 0.8em 0.5em;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 1em;
   overflow: auto;
   text-align: center;
@@ -40,8 +42,6 @@ export const FieldsItems = styled.li<{ width: string; isShow?: boolean }>`
   }
 
   @media screen and (max-width: 1000px) {
-    max-width: 10em;
-    min-width: 10em;
-    font-size: 0.8em;
+    font-size: 0.7em;
   }
 `;

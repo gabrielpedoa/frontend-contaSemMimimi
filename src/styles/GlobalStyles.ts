@@ -28,6 +28,10 @@ export const GlobalStyle = createGlobalStyle`
       text-decoration: none;
       color: #000;
     }
+
+    body {
+      background-color: #efefef;
+    }
 `;
 
 export const MainContainer = styled.main`

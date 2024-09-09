@@ -101,7 +101,7 @@ export default function SideBar() {
         <React.Fragment key={anchor}>
           <Button
             onClick={toggleDrawer(anchor, true)}
-            sx={{ color: "#fff", textDecoration: "none", height: "4em" }}
+            sx={{ color: "#000", textDecoration: "none", height: "4em", fontWeight: "600", letterSpacing: "2.5px"}}
           >
             menu
           </Button>

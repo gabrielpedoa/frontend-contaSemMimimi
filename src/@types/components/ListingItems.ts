@@ -1,6 +1,6 @@
 export type IFields = {
   name: string;
-  width: string;
+  w: string;
   isShow?: boolean;
 };
 
@@ -12,6 +12,6 @@ export interface IListingItemsProps<T, C> {
     itemProps?: C;
   }) => React.JSX.Element;
   fields: IFields[];
-  width?: string;
+  w?: string;
   itemProps?: C;
 }
