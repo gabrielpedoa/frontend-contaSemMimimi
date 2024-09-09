@@ -9,3 +9,8 @@ export const CreateAndEditUsersContainer = styled.div`
   align-items: center;
   gap: 1em;
 `;
+
+export const EditButtonSettings = styled.div`
+  display: flex;
+  gap: 1em;
+`;

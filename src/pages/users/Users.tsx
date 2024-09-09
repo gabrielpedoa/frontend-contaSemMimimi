@@ -18,11 +18,13 @@ function Users() {
         {users ? (
           users.map((user) => (
             <UsersListButton
+              key={user.id_user}
               sx={{
                 color: "#000",
                 border: "1px solid #c2c2c2",
                 borderRadius: "10px",
               }}
+              onClick={() => navigate(`/usuarios/editar/${user.id_user}`)}
             >
               {user.name}
               <p>{user.role === 1 ? "administrador" : "padrão"}</p>

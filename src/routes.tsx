@@ -35,4 +35,10 @@ export const routes: IRoutes[] = [
     requireAuth: true,
     requireRoles: [1],
   },
+  {
+    path: "/usuarios/editar/:id_user",
+    element: <RegisterOrUpdateUser />,
+    requireAuth: true,
+    requireRoles: [1],
+  },
 ];

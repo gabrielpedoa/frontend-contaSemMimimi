@@ -16,22 +16,29 @@ import {
 } from "@mui/material";
 import { AxiosError } from "axios";
 import { useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { IResponseModalState } from "../../@types/components/ResponseModal";
+import { IUser } from "../../@types/user";
 import Loading from "../../components/Loading";
 import ResponseModal from "../../components/ResponseModal";
-import { createUserService } from "../../services/users";
+import { useAuthHook } from "../../context/AuthContext";
+import { useFetching } from "../../hooks/useFetching";
+import {
+  createUserService,
+  deleteUserService,
+  updateUserService,
+} from "../../services/users";
 import { iconFontSize } from "../../styles/Variables";
-import { CreateAndEditUsersContainer } from "./styles/createAndEditUsers";
+import {
+  CreateAndEditUsersContainer,
+  EditButtonSettings,
+} from "./styles/createAndEditUsers";
 
 export interface ErrorMessage {
   errorMessage?: string;
 }
 
-interface IEdit {
-  id?: string;
-}
-
-function RegisterOrUpdateUser({ id }: IEdit) {
+function RegisterOrUpdateUser() {
   const nameRef = useRef<HTMLInputElement>();
   const phoneRef = useRef<HTMLInputElement>();
   const emailRef = useRef<HTMLInputElement>();
@@ -46,6 +53,14 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       icon: undefined,
     });
 
+  const { id_user } = useParams();
+
+  const { token } = useAuthHook();
+
+  const { data: user } = useFetching<IUser>({
+    url: `users/get/${id_user}`,
+  });
+
   const userInputs = [
     {
       input: "nome",
@@ -53,6 +68,8 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       shrink: true,
       icon: <BadgeIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: nameRef,
+      fetchedData: user?.name,
+      show: true,
     },
     {
       input: "telefone",
@@ -60,6 +77,8 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       shrink: true,
       icon: <PhoneIphoneIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: phoneRef,
+      fetchedData: user?.phone,
+      show: true,
     },
     {
       input: "email",
@@ -67,6 +86,8 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       shrink: true,
       icon: <EmailIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: emailRef,
+      fetchedData: user?.email,
+      show: true,
     },
     {
       input: "senha",
@@ -74,6 +95,8 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       shrink: true,
       icon: <KeyIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: passwordRef,
+      fetchedData: user?.password,
+      show: id_user ? false : true,
     },
   ];
 
@@ -136,15 +159,78 @@ function RegisterOrUpdateUser({ id }: IEdit) {
       setLoading(() => false);
     }
   }
+
+  async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      setLoading(() => true);
+      await deleteUserService(id_user!, token!);
+      setResponseUserModal({
+        open: true,
+        message: "Usuário deletado com sucesso",
+        icon: (
+          <SentimentVerySatisfiedIcon
+            sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
+          />
+        ),
+      });
+    } catch (error) {
+      const { response } = error as AxiosError<string>;
+      const err = (response?.data as ErrorMessage)?.errorMessage;
+      setResponseUserModal({
+        open: true,
+        message: String(err!),
+        icon: (
+          <SentimentVeryDissatisfiedIcon
+            sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
+          />
+        ),
+      });
+    } finally {
+      setLoading(() => false);
+    }
+  }
+
+  async function handleUpdate(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    try {
+      setLoading(() => true);
+      await updateUserService(user!, token!);
+      setResponseUserModal({
+        open: true,
+        message: "Usuário atualizado com sucesso",
+        icon: (
+          <SentimentVerySatisfiedIcon
+            sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
+          />
+        ),
+      });
+    } catch (error) {
+      const { response } = error as AxiosError<string>;
+      const err = (response?.data as ErrorMessage)?.errorMessage;
+      setResponseUserModal({
+        open: true,
+        message: String(err!),
+        icon: (
+          <SentimentVeryDissatisfiedIcon
+            sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
+          />
+        ),
+      });
+    } finally {
+      setLoading(() => false);
+    }
+  }
+
   return (
     <>
-      <h1>cadastro usuário</h1>
+      <h1>{id_user ? "editar usuário" : "cadastro usuário"}</h1>
       <CreateAndEditUsersContainer>
-        <FormControl sx={{ width: "56%" }}>
+        <FormControl sx={{ width: "100%", maxWidth: "212px" }}>
           <InputLabel>tipo de usuário</InputLabel>
           <Select
             required
-            value={type}
+            value={String(user?.role) ?? type}
             label="tipo de usuário"
             onChange={handleUserTypeChange}
           >
@@ -159,39 +245,55 @@ function RegisterOrUpdateUser({ id }: IEdit) {
           </Select>
         </FormControl>
         {userInputs &&
-          userInputs.map((item) => (
-            <TextField
-              required
-              key={item.input}
-              type={item.type}
-              label={item.input}
-              InputLabelProps={{ shrink: item.shrink }}
-              inputRef={item.ref}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      sx={{ fontSize: `${iconFontSize}` }}
-                    >
-                      {item.icon}
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-          ))}
+          userInputs.map(
+            (item) =>
+              item.show && (
+                <TextField
+                  required
+                  key={item.input}
+                  type={item.type}
+                  label={item.input}
+                  InputLabelProps={{ shrink: item.shrink }}
+                  inputRef={item.ref}
+                  value={item.fetchedData}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment
+                          position="start"
+                          sx={{ fontSize: `${iconFontSize}` }}
+                        >
+                          {item.icon}
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              )
+          )}
         {loading ? (
           <Loading />
         ) : (
-          <Button
-            variant="contained"
-            sx={{ height: "3em" }}
-            onClick={handleCreate}
-          >
-            Cadastrar
-          </Button>
+          <EditButtonSettings>
+            <Button
+              variant="contained"
+              sx={{ height: "3em" }}
+              onClick={id_user ? handleCreate : handleUpdate}
+            >
+              {id_user ? "editar" : "cadastrar"}
+            </Button>
+            {id_user && (
+              <Button
+                variant="contained"
+                sx={{ height: "3em", background: "red" }}
+                onClick={handleDelete}
+              >
+                Excluir
+              </Button>
+            )}
+          </EditButtonSettings>
         )}
+
         {responseUserModal && (
           <ResponseModal
             icon={responseUserModal.icon}
