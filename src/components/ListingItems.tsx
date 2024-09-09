@@ -1,7 +1,7 @@
 import React, { useId } from "react";
 import { IListingItemsProps } from "../@types/components/ListingItems";
-import { FieldsItems, Items, ListContainer } from "./styles/ListingItems";
 import * as uuid from "uuid";
+import { FieldsItems, Items, ListContainer } from "./styles/listingItems-style";
 
 function ListingItems<T, C>({
   data,

@@ -4,7 +4,7 @@ import { bgGradient, pFontSize } from "../../../styles/Variables";
 
 export const UsersContainer = styled.div`
   width: 100%;
-  min-height: 70vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

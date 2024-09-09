@@ -3,6 +3,7 @@ import { IUser } from "../@types/user";
 import { TOKEN_KEY, USER_KEY } from "../constants/keys";
 import { apiUrl } from "../utils/apiUrl";
 import { AxiosError } from "axios";
+import { IThrowErrorApi } from "../@types/errorApi";
 
 interface IAuthContext {
   user: IUser | null;
@@ -11,10 +12,6 @@ interface IAuthContext {
   loading: boolean;
   logout: () => void;
   handleUpdateUser: (user: IUser) => void;
-}
-
-interface ErrorResponse {
-  errorMessage?: string;
 }
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -58,7 +55,7 @@ export const AuthProvider = ({ children }: props) => {
       }
     } catch (error) {
       const { response } = error as AxiosError<string>;
-      const err = (response?.data as ErrorResponse)?.errorMessage;
+      const err = (response?.data as IThrowErrorApi)?.errorMessage;
       alert(err);
     } finally {
       setLoading(() => false);

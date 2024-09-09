@@ -5,8 +5,8 @@ export type IUser = {
     email: string;
     password?: string;
     role: number;
-    active: boolean;
-    created_at: Date;
-    updated_at: Date;
+    active?: boolean;
+    created_at?: Date;
+    updated_at?: Date;
   };
   
