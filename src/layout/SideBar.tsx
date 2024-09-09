@@ -12,8 +12,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import * as React from "react";
 import { SideBarContainer } from "./styles";
+import { Link } from "react-router-dom";
 
 type Anchor = "left";
 
@@ -22,14 +24,31 @@ export default function SideBar() {
     left: false,
   });
 
-  const topItems = ["Entradas", "Despesas"];
-  const iconTopItems = [<AttachMoneyOutlinedIcon />, <MoneyOffIcon />];
-  const bottomItems = ["Usuários", "Relatórios", "Objetivos"];
-  const iconBottonItems = [
-    <GroupAddOutlinedIcon />,
+  const topItems = [
+    "Entradas",
+    "Despesas",
+    "Dashboard",
+    "Relatórios",
+    "Objetivos",
+  ];
+  const linkTopItems = [
+    "/entradas",
+    "/despesas",
+    "/dashboard",
+    "/relatorios",
+    "/objetivos",
+  ];
+  const iconTopItems = [
+    <AttachMoneyOutlinedIcon />,
+    <MoneyOffIcon />,
     <AssessmentIcon />,
+    <StickyNote2Icon />,
     <ChecklistRtlIcon />,
   ];
+
+  const bottomItems = ["Usuários"];
+  const linkBottomItems = ["/usuarios"];
+  const iconBottonItems = [<GroupAddOutlinedIcon />];
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -47,7 +66,7 @@ export default function SideBar() {
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: "auto" }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
@@ -55,7 +74,7 @@ export default function SideBar() {
       <List>
         {topItems.map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={Link} to={linkTopItems[index]}>
               <ListItemIcon>{iconTopItems[index]}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -66,7 +85,7 @@ export default function SideBar() {
       <List>
         {bottomItems.map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={Link} to={linkBottomItems[index]}>
               <ListItemIcon>{iconBottonItems[index]}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>

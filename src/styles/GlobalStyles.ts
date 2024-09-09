@@ -37,7 +37,6 @@ export const MainContainer = styled.main`
   .content {
     max-height: 100vh;
     width: 100%;
-    overflow-y: scroll;
     text-transform: uppercase;
   }
 `;
