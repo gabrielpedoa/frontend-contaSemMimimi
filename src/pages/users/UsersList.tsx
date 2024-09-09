@@ -1,16 +1,11 @@
-import { IFields } from "../../@types/components/ListingItems";
-import { IUser } from "../../@types/user";
+import { IUsersListProps } from "../../@types/pages/users";
 import { FieldsItems, Items } from "../../components/styles/ListingItems";
 
-interface props {
-  data: IUser;
-  fields: IFields[];
-}
-function UsersList({ data, fields }: props) {
+function UsersList({ data, fields }: IUsersListProps) {
   const usersData = [
     { value: data.id_user },
     { value: data.name },
-    { value: data.role === 1 ? "administrador" : "Usuário Padrão" },
+    { value: data.role === 1 ? "administrador" : "usuário padrão" },
   ];
   return (
     <Items>
