@@ -6,6 +6,7 @@ import image from "../../assets/logo.png";
 import Loading from "../../components/Loading";
 import { useAuthHook } from "../../context/AuthContext";
 import { AuthContainer, ButtonContainer } from "./styles";
+import { iconFontSize } from "../../styles/Variables";
 
 const Auth = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -16,14 +17,14 @@ const Auth = () => {
       name: "username",
       type: "email",
       placeHolder: "type your username",
-      icon: <PersonIcon />,
+      icon: <PersonIcon sx={{ fontSize: `${iconFontSize}` }} />,
       inputRef: emailRef,
     },
     {
       name: "password",
       type: "password",
       placeHolder: "type your password",
-      icon: <KeyIcon />,
+      icon: <KeyIcon sx={{ fontSize: `${iconFontSize}` }} />,
       inputRef: passwordRef,
     },
   ];

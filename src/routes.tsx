@@ -2,6 +2,7 @@ import { IRoutes } from "./@types/route";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Expenses from "./pages/expenses/Expenses";
 import Incomes from "./pages/incomes/Income";
+import RegisterOrUpdateUser from "./pages/users/CreateAndEditUser";
 import Users from "./pages/users/Users";
 export const routes: IRoutes[] = [
   {
@@ -25,6 +26,12 @@ export const routes: IRoutes[] = [
   {
     path: "/usuarios",
     element: <Users />,
+    requireAuth: true,
+    requireRoles: [1],
+  },
+  {
+    path: "/usuarios/cadastro",
+    element: <RegisterOrUpdateUser />,
     requireAuth: true,
     requireRoles: [1],
   },
