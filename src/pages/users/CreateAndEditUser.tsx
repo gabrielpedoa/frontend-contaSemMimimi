@@ -15,7 +15,7 @@ import {
   TextField,
 } from "@mui/material";
 import { AxiosError } from "axios";
-import { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IResponseModalState } from "../../@types/components/ResponseModal";
 import { IUser } from "../../@types/user";
@@ -39,11 +39,22 @@ export interface ErrorMessage {
 }
 
 function RegisterOrUpdateUser() {
+  const { id_user } = useParams();
+
+  const { data: user } = useFetching<IUser>({
+    url: `users/get/${id_user}`,
+  });
+
+  const { token } = useAuthHook();
+
   const nameRef = useRef<HTMLInputElement>();
   const phoneRef = useRef<HTMLInputElement>();
   const emailRef = useRef<HTMLInputElement>();
   const passwordRef = useRef<HTMLInputElement>();
 
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [responseUserModal, setResponseUserModal] =
@@ -53,13 +64,14 @@ function RegisterOrUpdateUser() {
       icon: undefined,
     });
 
-  const { id_user } = useParams();
-
-  const { token } = useAuthHook();
-
-  const { data: user } = useFetching<IUser>({
-    url: `users/get/${id_user}`,
-  });
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setPhone(user.phone);
+      setEmail(user.email);
+      setType(String(user.role));
+    }
+  }, [user]);
 
   const userInputs = [
     {
@@ -68,8 +80,10 @@ function RegisterOrUpdateUser() {
       shrink: true,
       icon: <BadgeIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: nameRef,
-      fetchedData: user?.name,
+      fetchedData: name,
       show: true,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setName(e.target.value),
     },
     {
       input: "telefone",
@@ -77,8 +91,10 @@ function RegisterOrUpdateUser() {
       shrink: true,
       icon: <PhoneIphoneIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: phoneRef,
-      fetchedData: user?.phone,
+      fetchedData: phone,
       show: true,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setPhone(e.target.value),
     },
     {
       input: "email",
@@ -86,8 +102,10 @@ function RegisterOrUpdateUser() {
       shrink: true,
       icon: <EmailIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: emailRef,
-      fetchedData: user?.email,
+      fetchedData: email,
       show: true,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setEmail(e.target.value),
     },
     {
       input: "senha",
@@ -95,7 +113,7 @@ function RegisterOrUpdateUser() {
       shrink: true,
       icon: <KeyIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: passwordRef,
-      fetchedData: user?.password,
+      fetchedData: user?.password ?? "",
       show: id_user ? false : true,
     },
   ];
@@ -193,9 +211,10 @@ function RegisterOrUpdateUser() {
 
   async function handleUpdate(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
+    const data = getRefInputs();
     try {
       setLoading(() => true);
-      await updateUserService(user!, token!);
+      await updateUserService({ id_user: Number(id_user!), ...data }, token!);
       setResponseUserModal({
         open: true,
         message: "Usuário atualizado com sucesso",
@@ -230,7 +249,7 @@ function RegisterOrUpdateUser() {
           <InputLabel>tipo de usuário</InputLabel>
           <Select
             required
-            value={String(user?.role) ?? type}
+            value={type}
             label="tipo de usuário"
             onChange={handleUserTypeChange}
           >
@@ -256,6 +275,7 @@ function RegisterOrUpdateUser() {
                   InputLabelProps={{ shrink: item.shrink }}
                   inputRef={item.ref}
                   value={item.fetchedData}
+                  onChange={item.onChange}
                   slotProps={{
                     input: {
                       startAdornment: (
@@ -278,7 +298,7 @@ function RegisterOrUpdateUser() {
             <Button
               variant="contained"
               sx={{ height: "3em" }}
-              onClick={id_user ? handleCreate : handleUpdate}
+              onClick={id_user ? handleUpdate : handleCreate}
             >
               {id_user ? "editar" : "cadastrar"}
             </Button>
