@@ -23,7 +23,6 @@ import HeaderComponent from "../../components/HeaderComponent";
 import Loading from "../../components/Loading";
 import ResponseModal from "../../components/ResponseModal";
 import { useAuthHook } from "../../context/AuthContext";
-import { useFetching } from "../../hooks/useFetching";
 import {
   createUserService,
   deleteUserService,
