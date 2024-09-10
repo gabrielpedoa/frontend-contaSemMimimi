@@ -19,6 +19,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IResponseModalState } from "../../@types/components/ResponseModal";
 import { IUser } from "../../@types/user";
+import HeaderComponent from "../../components/HeaderComponent";
 import Loading from "../../components/Loading";
 import ResponseModal from "../../components/ResponseModal";
 import { useAuthHook } from "../../context/AuthContext";
@@ -26,6 +27,7 @@ import { useFetching } from "../../hooks/useFetching";
 import {
   createUserService,
   deleteUserService,
+  getUsersService,
   updateUserService,
 } from "../../services/users";
 import { iconFontSize } from "../../styles/Variables";
@@ -41,10 +43,16 @@ export interface ErrorMessage {
 function RegisterOrUpdateUser() {
   const { id_user } = useParams();
 
-  const { data: user } = useFetching<IUser>({
-    url: `users/get/${id_user}`,
-  });
+  const [user, setUser] = useState<IUser | null>(null);
 
+  useEffect(() => {
+    if (id_user) {
+      (async () => {
+        const response = await getUsersService(id_user, token!);
+        setUser(response);
+      })();
+    }
+  }, [id_user]);
   const { token } = useAuthHook();
 
   const nameRef = useRef<HTMLInputElement>();
@@ -113,7 +121,6 @@ function RegisterOrUpdateUser() {
       shrink: true,
       icon: <KeyIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: passwordRef,
-      fetchedData: user?.password ?? "",
       show: id_user ? false : true,
     },
   ];
@@ -161,12 +168,17 @@ function RegisterOrUpdateUser() {
         ),
       });
     } catch (error) {
+      let zodErrors = [];
       const { response } = error as AxiosError<string>;
       const err = (response?.data as ErrorMessage)?.errorMessage;
-      console.log(err);
+      if (Array.isArray(err)) {
+        for (const item of err) {
+          zodErrors.push(item.message);
+        }
+      }
       setResponseUserModal({
         open: true,
-        message: String(err!),
+        message: zodErrors.length > 0 ? zodErrors.join("| ") : String(err!),
         icon: (
           <SentimentVeryDissatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
@@ -225,11 +237,17 @@ function RegisterOrUpdateUser() {
         ),
       });
     } catch (error) {
+      let zodErrors = [];
       const { response } = error as AxiosError<string>;
       const err = (response?.data as ErrorMessage)?.errorMessage;
+      if (Array.isArray(err)) {
+        for (const item of err) {
+          zodErrors.push(item.message);
+        }
+      }
       setResponseUserModal({
         open: true,
-        message: String(err!),
+        message: zodErrors.length > 0 ? zodErrors.join("| ") : String(err!),
         icon: (
           <SentimentVeryDissatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
@@ -243,7 +261,10 @@ function RegisterOrUpdateUser() {
 
   return (
     <>
-      <h1>{id_user ? "editar usuário" : "cadastro usuário"}</h1>
+      <HeaderComponent
+        title={id_user ? "editar usuário" : "cadastro usuário"}
+        route={"/usuarios"}
+      />
       <CreateAndEditUsersContainer>
         <FormControl sx={{ width: "100%", maxWidth: "212px" }}>
           <InputLabel>tipo de usuário</InputLabel>
@@ -313,7 +334,6 @@ function RegisterOrUpdateUser() {
             )}
           </EditButtonSettings>
         )}
-
         {responseUserModal && (
           <ResponseModal
             icon={responseUserModal.icon}
