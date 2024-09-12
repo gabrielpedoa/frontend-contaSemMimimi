@@ -1,9 +1,10 @@
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { IUser } from "../../@types/user";
-import { useFetching } from "../../hooks/useFetching";
-import { AddUserButton, UsersContainer, UsersListButton } from "./styles/users";
 import { useNavigate } from "react-router-dom";
+import { IUser } from "../../@types/user";
 import Loading from "../../components/Loading";
+import { useFetching } from "../../hooks/useFetching";
+import { AddRegisterButton } from "../../styles/GlobalStyles";
+import { UsersContainer, UsersListButton } from "./styles/users";
 
 function Users() {
   const { data: users } = useFetching<IUser[]>({
@@ -33,12 +34,12 @@ function Users() {
         ) : (
           <Loading />
         )}
-        <AddUserButton>
+        <AddRegisterButton>
           <PersonAddIcon sx={{ fontSize: "1em", color: "green" }} />
           <p onClick={() => navigate("/usuarios/cadastro")}>
             cadastrar novo usuário
           </p>
-        </AddUserButton>
+        </AddRegisterButton>
       </UsersContainer>
     </>
   );

@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 import styled, { createGlobalStyle } from "styled-components";
-import { bgPrimaryColor, h1FontSize } from "./Variables";
+import { bgPrimaryColor, h1FontSize, pFontSize } from "./Variables";
 
 export const THEME = createTheme({
   typography: {
@@ -58,4 +58,33 @@ export const MainContainer = styled.main`
       }
     }
   }
+`;
+
+export const AddRegisterButton = styled.div`
+  width: 95%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+
+  p {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 768px) {
+    p {
+      font-size: ${pFontSize};
+    }
+  }
+`;
+
+export const DefaultFormContainer = styled.div`
+  width: 100%;
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
 `;

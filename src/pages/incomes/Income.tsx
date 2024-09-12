@@ -1,13 +1,23 @@
-import ListingItems from "../../components/ListingItems";
-import IncomeList from "./IncomeList";
+import { useNavigate } from "react-router-dom";
 import { IncomeContainer } from "./styles";
-import { fields } from "./utils/fields";
+import { AddRegisterButton } from "../../styles/GlobalStyles";
+import AddIcon from "@mui/icons-material/Add";
 
 const Incomes = () => {
+  const navigate = useNavigate();
   return (
     <IncomeContainer>
       <h1>Entradas</h1>
-      <ListingItems data={[]} fields={fields} ItemComponent={IncomeList} />
+      <AddRegisterButton>
+        <AddIcon sx={{ fontSize: "1em", color: "green" }} />
+        <p onClick={() => navigate("/entradas/categoria")}>
+          categoria de entradas
+        </p>
+      </AddRegisterButton>
+      <AddRegisterButton>
+        <AddIcon sx={{ fontSize: "1em", color: "green" }} />
+        <p onClick={() => navigate("/entrada/cadastro")}>nova entrada</p>
+      </AddRegisterButton>
     </IncomeContainer>
   );
 };

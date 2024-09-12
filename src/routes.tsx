@@ -2,6 +2,7 @@ import { IRoutes } from "./@types/route";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Expenses from "./pages/expenses/Expenses";
 import Incomes from "./pages/incomes/Income";
+import IncomeCategory from "./pages/incomes/IncomeCategory";
 import RegisterOrUpdateUser from "./pages/users/CreateAndEditUser";
 import Users from "./pages/users/Users";
 export const routes: IRoutes[] = [
@@ -14,6 +15,12 @@ export const routes: IRoutes[] = [
   {
     path: "/entradas",
     element: <Incomes />,
+    requireAuth: true,
+    requireRoles: [1],
+  },
+  {
+    path: "/entradas/categoria",
+    element: <IncomeCategory />,
     requireAuth: true,
     requireRoles: [1],
   },

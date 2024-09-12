@@ -91,6 +91,7 @@ function RegisterOrUpdateUser() {
       show: true,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
         setName(e.target.value),
+      placeholder: "nome do usuário",
     },
     {
       input: "telefone",
@@ -102,6 +103,7 @@ function RegisterOrUpdateUser() {
       show: true,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
         setPhone(e.target.value),
+      placeholder: "telefone do usuário",
     },
     {
       input: "email",
@@ -113,6 +115,7 @@ function RegisterOrUpdateUser() {
       show: true,
       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
         setEmail(e.target.value),
+      placeholder: "email do usuário",
     },
     {
       input: "senha",
@@ -121,6 +124,7 @@ function RegisterOrUpdateUser() {
       icon: <KeyIcon sx={{ fontSize: `${iconFontSize}` }} />,
       ref: passwordRef,
       show: id_user ? false : true,
+      placeholder: "senha do usuário",
     },
   ];
 
@@ -296,6 +300,7 @@ function RegisterOrUpdateUser() {
                   inputRef={item.ref}
                   value={item.fetchedData}
                   onChange={item.onChange}
+                  placeholder={item.placeholder}
                   slotProps={{
                     input: {
                       startAdornment: (
