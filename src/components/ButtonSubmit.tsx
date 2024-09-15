@@ -1,8 +1,9 @@
 import { Button } from "@mui/material";
 import { ButtonContainer } from "./styles/buttonSubmit";
+import React from "react";
 
 interface ISubmitButtonProps {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   description: string;
 }
 
