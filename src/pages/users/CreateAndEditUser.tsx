@@ -29,10 +29,10 @@ import {
   getUsersService,
   updateUserService,
 } from "../../services/users";
+import { DefaultFormContainer } from "../../styles/GlobalStyles";
 import { iconFontSize } from "../../styles/Variables";
 import {
-  CreateAndEditUsersContainer,
-  EditButtonSettings,
+  EditButtonSettings
 } from "./styles/createAndEditUsers";
 
 export interface ErrorMessage {
@@ -268,7 +268,7 @@ function RegisterOrUpdateUser() {
         title={id_user ? "editar usuário" : "cadastro usuário"}
         route={"/usuarios"}
       />
-      <CreateAndEditUsersContainer>
+      <DefaultFormContainer width={80}>
         <FormControl sx={{ width: "100%", maxWidth: "212px" }}>
           <InputLabel>tipo de usuário</InputLabel>
           <Select
@@ -347,7 +347,7 @@ function RegisterOrUpdateUser() {
             onClose={handleClose}
           />
         )}
-      </CreateAndEditUsersContainer>
+      </DefaultFormContainer>
     </>
   );
 }

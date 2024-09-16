@@ -79,9 +79,9 @@ export const AddRegisterButton = styled.div`
   }
 `;
 
-export const DefaultFormContainer = styled.div`
+export const DefaultFormContainer = styled.div<{ width: number }>`
   width: 100%;
-  min-height: 65vh;
+  min-height: ${({ width }) => width}vh;
   display: flex;
   flex-direction: column;
   justify-content: center;

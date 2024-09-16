@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { IUser } from "../../@types/user";
 import Loading from "../../components/Loading";
 import { useFetching } from "../../hooks/useFetching";
-import { AddRegisterButton } from "../../styles/GlobalStyles";
-import { UsersContainer, UsersListButton } from "./styles/users";
+import {
+  AddRegisterButton,
+  DefaultFormContainer,
+} from "../../styles/GlobalStyles";
+import { UsersListButton } from "./styles/users";
 
 function Users() {
   const { data: users } = useFetching<IUser[]>({
@@ -15,7 +18,7 @@ function Users() {
   return (
     <>
       <h1>usuários</h1>
-      <UsersContainer>
+      <DefaultFormContainer width={65}>
         {users ? (
           users.map((user) => (
             <UsersListButton
@@ -40,7 +43,7 @@ function Users() {
             cadastrar novo usuário
           </p>
         </AddRegisterButton>
-      </UsersContainer>
+      </DefaultFormContainer>
     </>
   );
 }

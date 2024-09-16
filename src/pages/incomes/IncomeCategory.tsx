@@ -103,7 +103,7 @@ function IncomeCategory() {
   return (
     <>
       <HeaderComponent title={"categoria de entradas"} route={"/entradas"} />
-      <DefaultFormContainer>
+      <DefaultFormContainer width={65}>
         {inputs.map((input) => (
           <TextField
             sx={{ maxWidth: "211.95px" }}
