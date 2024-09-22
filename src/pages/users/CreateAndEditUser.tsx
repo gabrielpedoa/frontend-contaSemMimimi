@@ -14,7 +14,6 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { AxiosError } from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IResponseModalState } from "../../@types/components/ResponseModal";
@@ -23,17 +22,11 @@ import HeaderComponent from "../../components/HeaderComponent";
 import Loading from "../../components/Loading";
 import ResponseModal from "../../components/ResponseModal";
 import { useAuthHook } from "../../context/AuthContext";
-import {
-  createUserService,
-  deleteUserService,
-  getUsersService,
-  updateUserService,
-} from "../../services/users";
+import { useRequest } from "../../hooks/useRequest";
+import { getUsersService } from "../../services/users";
 import { DefaultFormContainer } from "../../styles/GlobalStyles";
 import { iconFontSize } from "../../styles/Variables";
-import {
-  EditButtonSettings
-} from "./styles/createAndEditUsers";
+import { EditButtonSettings } from "./styles/createAndEditUsers";
 
 export interface ErrorMessage {
   errorMessage?: string;
@@ -63,7 +56,6 @@ function RegisterOrUpdateUser() {
   const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [responseUserModal, setResponseUserModal] =
     useState<IResponseModalState>({
       open: false,
@@ -155,111 +147,48 @@ function RegisterOrUpdateUser() {
     });
   }
 
-  async function handleCreate(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    const data = getRefInputs();
-    try {
-      setLoading(() => true);
-      await createUserService(data);
+  const { makeRequest, loading } = useRequest({
+    token: token!,
+    onSuccess: (response: IUser) => {
       setResponseUserModal({
         open: true,
-        message: "Usuário cadastrado com sucesso",
+        message: `ação para ${response.name} realizada com sucesso!`,
         icon: (
           <SentimentVerySatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
           />
         ),
       });
-    } catch (error) {
-      let zodErrors = [];
-      const { response } = error as AxiosError<string>;
-      const err = (response?.data as ErrorMessage)?.errorMessage;
-      if (Array.isArray(err)) {
-        for (const item of err) {
-          zodErrors.push(item.message);
-        }
-      }
+    },
+    onError: (error) => {
       setResponseUserModal({
         open: true,
-        message: zodErrors.length > 0 ? zodErrors.join("| ") : String(err!),
+        message: String(error),
         icon: (
           <SentimentVeryDissatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
           />
         ),
       });
-    } finally {
-      setLoading(() => false);
-    }
+    },
+  });
+
+  async function handleCreate(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const data = getRefInputs();
+    await makeRequest("/users/create", "create", data);
   }
 
   async function handleDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    try {
-      setLoading(() => true);
-      await deleteUserService(id_user!, token!);
-      setResponseUserModal({
-        open: true,
-        message: "Usuário deletado com sucesso",
-        icon: (
-          <SentimentVerySatisfiedIcon
-            sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
-          />
-        ),
-      });
-    } catch (error) {
-      const { response } = error as AxiosError<string>;
-      const err = (response?.data as ErrorMessage)?.errorMessage;
-      setResponseUserModal({
-        open: true,
-        message: String(err!),
-        icon: (
-          <SentimentVeryDissatisfiedIcon
-            sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
-          />
-        ),
-      });
-    } finally {
-      setLoading(() => false);
-    }
+    const data = null;
+    await makeRequest(`/users/delete/${id_user}`, "delete", data);
   }
 
   async function handleUpdate(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const data = getRefInputs();
-    try {
-      setLoading(() => true);
-      await updateUserService({ id_user: Number(id_user!), ...data }, token!);
-      setResponseUserModal({
-        open: true,
-        message: "Usuário atualizado com sucesso",
-        icon: (
-          <SentimentVerySatisfiedIcon
-            sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
-          />
-        ),
-      });
-    } catch (error) {
-      let zodErrors = [];
-      const { response } = error as AxiosError<string>;
-      const err = (response?.data as ErrorMessage)?.errorMessage;
-      if (Array.isArray(err)) {
-        for (const item of err) {
-          zodErrors.push(item.message);
-        }
-      }
-      setResponseUserModal({
-        open: true,
-        message: zodErrors.length > 0 ? zodErrors.join("| ") : String(err!),
-        icon: (
-          <SentimentVeryDissatisfiedIcon
-            sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
-          />
-        ),
-      });
-    } finally {
-      setLoading(() => false);
-    }
+    await makeRequest(`users/update/${id_user}`, "update", data);
   }
 
   return (

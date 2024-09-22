@@ -8,6 +8,7 @@ import {
   DefaultFormContainer,
 } from "../../styles/GlobalStyles";
 import { UsersListButton } from "./styles/users";
+import HeaderComponent from "../../components/HeaderComponent";
 
 function Users() {
   const { data: users } = useFetching<IUser[]>({
@@ -17,7 +18,7 @@ function Users() {
   const navigate = useNavigate();
   return (
     <>
-      <h1>usuários</h1>
+      <HeaderComponent title="usuários" route="/dashboard" />
       <DefaultFormContainer width={65}>
         {users ? (
           users.map((user) => (

@@ -3,22 +3,20 @@ import LocalAtmIcon from "@mui/icons-material/LocalAtm";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 import { InputAdornment, TextField } from "@mui/material";
-import { AxiosError } from "axios";
 import React, { useRef, useState } from "react";
 import { IResponseModalState } from "../../@types/components/ResponseModal";
+import { IIncomeCategory } from "../../@types/incomeCategory";
 import SubmitButton from "../../components/ButtonSubmit";
 import HeaderComponent from "../../components/HeaderComponent";
-import { useAuthHook } from "../../context/AuthContext";
-import { createIncomeCategoryService } from "../../services/incomeCategory";
-import { DefaultFormContainer } from "../../styles/GlobalStyles";
-import { iconFontSize } from "../../styles/Variables";
-import { ErrorMessage } from "../users/CreateAndEditUser";
 import Loading from "../../components/Loading";
 import ResponseModal from "../../components/ResponseModal";
+import { useAuthHook } from "../../context/AuthContext";
+import { useRequest } from "../../hooks/useRequest";
+import { DefaultFormContainer } from "../../styles/GlobalStyles";
+import { iconFontSize } from "../../styles/Variables";
 
 function IncomeCategory() {
   const { token } = useAuthHook();
-  const [loading, setLoading] = useState<boolean>(false);
   const [responseUserModal, setResponseUserModal] =
     useState<IResponseModalState>({
       open: false,
@@ -54,42 +52,36 @@ function IncomeCategory() {
     return { name: name!, description: description! };
   }
 
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    const data = getInputRef();
-    try {
-      setLoading(() => true);
-      await createIncomeCategoryService(data, token!);
+  const { makeRequest, loading } = useRequest({
+    token: token!,
+    onSuccess: (response: IIncomeCategory) => {
       setResponseUserModal({
         open: true,
-        message: "Categoria de entrada cadastrada com sucesso",
+        message: `ação para ${response.name} realizada com sucesso!`,
         icon: (
           <SentimentVerySatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "blue" }}
           />
         ),
       });
-    } catch (error) {
-      let zodErrors = [];
-      const { response } = error as AxiosError<string>;
-      const err = (response?.data as ErrorMessage)?.errorMessage;
-      if (Array.isArray(err)) {
-        for (const item of err) {
-          zodErrors.push(item.message);
-        }
-      }
+    },
+    onError: (error) => {
       setResponseUserModal({
         open: true,
-        message: zodErrors.length > 0 ? zodErrors.join("| ") : String(err!),
+        message: String(error),
         icon: (
           <SentimentVeryDissatisfiedIcon
             sx={{ fontSize: `${iconFontSize}*4`, color: "red" }}
           />
         ),
       });
-    } finally {
-      setLoading(() => false);
-    }
+    },
+  });
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    const data = getInputRef();
+    await makeRequest("/income-category/create", "create", data);
   }
 
   function handleClose() {
