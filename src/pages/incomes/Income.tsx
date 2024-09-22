@@ -17,7 +17,7 @@ const Incomes = () => {
         </AddRegisterButton>
         <AddRegisterButton>
           <AddIcon sx={{ fontSize: "1em", color: "green" }} />
-          <p onClick={() => navigate("/entrada/cadastro")}>nova entrada</p>
+          <p onClick={() => navigate("/entradas/cadastro")}>nova entrada</p>
         </AddRegisterButton>
       </DefaultFormContainer>
     </>
